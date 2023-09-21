@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"github.com/adriansabvr/receipt_processor/internal/entity"
 	"github.com/palantir/stacktrace"
 )
@@ -18,7 +19,7 @@ func New() *ReceiptRepo {
 	return &ReceiptRepo{mp: make(map[uint64]entity.Receipt)}
 }
 
-var id uint64 = 0
+var id uint64
 
 // InsertReceipt -.
 func (r *ReceiptRepo) InsertReceipt(_ context.Context, receipt entity.Receipt) uint64 {

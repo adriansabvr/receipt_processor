@@ -2,48 +2,46 @@ package receipt
 
 import (
 	"context"
+	"strings"
+	"unicode"
+
 	"github.com/adriansabvr/receipt_processor/internal/entity"
 	"github.com/palantir/stacktrace"
 	"github.com/shopspring/decimal"
-	"strings"
-	"unicode"
 )
 
-// ReceiptUseCase -.
-type ReceiptUseCase struct {
+// UseCase -.
+type UseCase struct {
 	repo RepoContract
 }
 
 // New -.
-func New(r RepoContract) *ReceiptUseCase {
-	return &ReceiptUseCase{
+func New(r RepoContract) *UseCase {
+	return &UseCase{
 		repo: r,
 	}
 }
 
 // Process - inserts receipt to repo.
-func (uc *ReceiptUseCase) Process(ctx context.Context, receipt entity.Receipt) uint64 {
+func (uc *UseCase) Process(ctx context.Context, receipt entity.Receipt) uint64 {
 	receiptID := uc.repo.InsertReceipt(ctx, receipt)
 
 	return receiptID
 }
 
 // GetPoints -.
-func (uc *ReceiptUseCase) GetPoints(ctx context.Context, receiptID uint64) (int, error) {
+func (uc *UseCase) GetPoints(ctx context.Context, receiptID uint64) (int, error) {
 	receipt, err := uc.repo.GetReceipt(ctx, receiptID)
 	if err != nil {
 		return 0, stacktrace.Propagate(err, "failed to get receipt from repo")
 	}
 
-	points, err := getPoints(receipt)
-	if err != nil {
-		return 0, stacktrace.Propagate(err, "failed to get points")
-	}
+	points := getPoints(receipt)
 
 	return points, nil
 }
 
-func getPoints(receipt entity.Receipt) (int, error) {
+func getPoints(receipt entity.Receipt) int {
 	points := 0
 
 	// One point for every alphanumeric character in the retailer name.
@@ -83,7 +81,7 @@ func getPoints(receipt entity.Receipt) (int, error) {
 		points += 10
 	}
 
-	return points, nil
+	return points
 }
 
 func countAlphanumeric(str string) int {

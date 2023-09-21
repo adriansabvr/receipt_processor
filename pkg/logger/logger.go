@@ -1,9 +1,10 @@
 package logger
 
 import (
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
 )
 
 // Interface contract for logger -.
@@ -23,8 +24,7 @@ type Logger struct {
 var _ Interface = (*Logger)(nil)
 
 // New -.
-func New(level string) *Logger {
-
+func New(_ string) *Logger {
 	logger, _ := zap.NewDevelopment()
 	sugaredLogger := logger.Sugar().WithOptions(zap.AddStacktrace(zapcore.InvalidLevel))
 

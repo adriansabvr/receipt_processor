@@ -2,9 +2,10 @@ package v1
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // OK returns a 200.

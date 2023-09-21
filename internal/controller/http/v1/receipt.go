@@ -1,15 +1,16 @@
 package v1
 
 import (
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/adriansabvr/receipt_processor/internal/entity"
 	"github.com/adriansabvr/receipt_processor/internal/usecase/receipt"
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/palantir/stacktrace"
 	"github.com/shopspring/decimal"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 type receiptRoutes struct {
@@ -43,7 +44,6 @@ type processResponse struct {
 }
 
 func (r *receiptRoutes) process(c *gin.Context) {
-
 	var request processRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		BadRequest(c, r.logger, err)

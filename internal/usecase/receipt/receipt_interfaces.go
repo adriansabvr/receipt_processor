@@ -2,6 +2,7 @@ package receipt
 
 import (
 	"context"
+
 	"github.com/adriansabvr/receipt_processor/internal/entity"
 )
 

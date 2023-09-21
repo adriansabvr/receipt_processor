@@ -2,13 +2,14 @@ package receipt_test
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/adriansabvr/receipt_processor/internal/entity"
 	"github.com/adriansabvr/receipt_processor/internal/usecase/receipt"
 	"github.com/golang/mock/gomock"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 type test struct {
@@ -20,7 +21,7 @@ type test struct {
 	err     error
 }
 
-func receiptTestService(t *testing.T) (*receipt.ReceiptUseCase, *MockRepoContract) {
+func receiptTestService(t *testing.T) (*receipt.UseCase, *MockRepoContract) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
@@ -32,7 +33,7 @@ func receiptTestService(t *testing.T) (*receipt.ReceiptUseCase, *MockRepoContrac
 	return useCase, repo
 }
 
-// getTestReceipt1 returns a test receipt using the examples in the README.md
+// getTestReceipt1 returns a test receipt using the examples in the README.md.
 func getTestReceipt1() entity.Receipt {
 	return entity.Receipt{
 		Retailer:     "Target",
@@ -64,7 +65,7 @@ func getTestReceipt1() entity.Receipt {
 	}
 }
 
-// getTestReceipt2 returns a test receipt using the examples in the README.md
+// getTestReceipt2 returns a test receipt using the examples in the README.md.
 func getTestReceipt2() entity.Receipt {
 	return entity.Receipt{
 		Retailer:     "M&M Corner Market",

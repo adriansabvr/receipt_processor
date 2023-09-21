@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"time"
+
+	"github.com/palantir/stacktrace"
 )
 
 const (
@@ -62,5 +64,9 @@ func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
 
-	return s.server.Shutdown(ctx)
+	if err := s.server.Shutdown(ctx); err != nil {
+		return stacktrace.Propagate(err, "failed to shutdown server")
+	}
+
+	return nil
 }

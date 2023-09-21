@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/adriansabvr/receipt_processor/config"
 	"github.com/adriansabvr/receipt_processor/internal/app"
-	"log"
 )
 
 func main() {

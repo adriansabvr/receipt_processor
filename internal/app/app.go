@@ -1,15 +1,16 @@
 package app
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/adriansabvr/receipt_processor/config"
 	v1 "github.com/adriansabvr/receipt_processor/internal/controller/http/v1"
 	"github.com/adriansabvr/receipt_processor/pkg/httpserver"
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/palantir/stacktrace"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 // Run creates objects via constructors.
