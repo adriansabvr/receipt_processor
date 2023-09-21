@@ -43,6 +43,16 @@ type processResponse struct {
 	ID uint64 `json:"id"`
 }
 
+// @Summary		Process receipt
+// @Description	Process receipt and return receipt id
+// @ID				process
+// @Tags			receipt
+// @Accept			json
+// @Produce		json
+// @Param			request	body		processRequest	true	"Set up receipt to process"
+// @Success		200		{object}	processResponse
+// @Failure		400		{object}	response
+// @Router			/receipts/process [post]
 func (r *receiptRoutes) process(c *gin.Context) {
 	var request processRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -90,6 +100,16 @@ type pointsResponse struct {
 	Points int `json:"points"`
 }
 
+// @Summary		Get points
+// @Description	Get receipt points by receipt id
+// @ID				get-points
+// @Tags			receipt
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	pointsResponse
+// @Failure		400	{object}	response
+// @Failure		500	{object}	response
+// @Router			/receipts/:id/points [get]
 func (r *receiptRoutes) getPoints(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

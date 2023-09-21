@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type response struct {
+	Error string `json:"error" example:"message"`
+}
+
 // OK returns a 200.
 func OK(c *gin.Context, val interface{}) {
 	c.JSON(http.StatusOK, val)
@@ -27,5 +31,5 @@ func InternalServerError(c *gin.Context, l logger.Interface, err error) {
 func abort(c *gin.Context, l logger.Interface, code int, err error) {
 	errMsg := fmt.Sprintf("%#s", err)
 	l.Error(errMsg, err)
-	c.AbortWithStatusJSON(code, errMsg)
+	c.AbortWithStatusJSON(code, response{Error: errMsg})
 }

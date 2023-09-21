@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/adriansabvr/receipt_processor/config"
+	_ "github.com/adriansabvr/receipt_processor/docs"
 	"github.com/adriansabvr/receipt_processor/internal/app"
 )
 

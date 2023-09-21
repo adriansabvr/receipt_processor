@@ -1,0 +1,97 @@
+basePath: /v1
+definitions:
+  v1.pointsResponse:
+    properties:
+      points:
+        type: integer
+    type: object
+  v1.processRequest:
+    properties:
+      items:
+        items:
+          properties:
+            price:
+              type: number
+            shortDescription:
+              type: string
+          type: object
+        type: array
+      purchaseDate:
+        type: string
+      purchaseTime:
+        type: string
+      retailer:
+        type: string
+      total:
+        type: number
+    type: object
+  v1.processResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  v1.response:
+    properties:
+      error:
+        example: message
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for a receipt processor challenge.
+  title: Receipt Processor API
+  version: "1.0"
+paths:
+  /receipts/:id/points:
+    get:
+      consumes:
+      - application/json
+      description: Get receipt points by receipt id
+      operationId: get-points
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.pointsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get points
+      tags:
+      - receipt
+  /receipts/process:
+    post:
+      consumes:
+      - application/json
+      description: Process receipt and return receipt id
+      operationId: process
+      parameters:
+      - description: Set up receipt to process
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.processRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.processResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Process receipt
+      tags:
+      - receipt
+swagger: "2.0"
