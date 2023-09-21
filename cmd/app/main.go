@@ -1,4 +1,4 @@
-package app
+package main
 
 import (
 	"github.com/adriansabvr/receipt_processor/config"

@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/palantir/stacktrace"
 )
 
 type (
@@ -36,12 +36,12 @@ func NewConfig() (*Config, error) {
 
 	err := cleanenv.ReadConfig("./config/config.yml", cfg)
 	if err != nil {
-		return nil, fmt.Errorf("config error: %w", err)
+		return nil, stacktrace.Propagate(err, "failed to read config file")
 	}
 
 	err = cleanenv.ReadEnv(cfg)
 	if err != nil {
-		return nil, err
+		return nil, stacktrace.Propagate(err, "failed to read env variables")
 	}
 
 	return cfg, nil

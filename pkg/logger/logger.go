@@ -1,10 +1,9 @@
 package logger
 
 import (
-	"fmt"
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"os"
-	"strings"
 )
 
 // Interface contract for logger -.
@@ -13,94 +12,49 @@ type Interface interface {
 	Info(message string, args ...interface{})
 	Warn(message string, args ...interface{})
 	Error(message interface{}, args ...interface{})
-	Fatal(message interface{}, args ...interface{})
+	Fatal(args ...interface{})
 }
 
 // Logger -.
 type Logger struct {
-	logger *zerolog.Logger
+	logger *zap.SugaredLogger
 }
 
 var _ Interface = (*Logger)(nil)
 
 // New -.
 func New(level string) *Logger {
-	var l zerolog.Level
 
-	switch strings.ToLower(level) {
-	case "error":
-		l = zerolog.ErrorLevel
-	case "warn":
-		l = zerolog.WarnLevel
-	case "info":
-		l = zerolog.InfoLevel
-	case "debug":
-		l = zerolog.DebugLevel
-	default:
-		l = zerolog.InfoLevel
-	}
-
-	zerolog.SetGlobalLevel(l)
-
-	skipFrameCount := 3
-	logger := zerolog.
-		New(os.Stdout).
-		With().
-		Timestamp().
-		CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).
-		Logger()
+	logger, _ := zap.NewDevelopment()
+	sugaredLogger := logger.Sugar().WithOptions(zap.AddStacktrace(zapcore.InvalidLevel))
 
 	return &Logger{
-		logger: &logger,
+		logger: sugaredLogger,
 	}
 }
 
 // Debug -.
 func (l *Logger) Debug(message interface{}, args ...interface{}) {
-	l.msg("debug", message, args...)
+	l.logger.Debug(message, args)
 }
 
 // Info -.
 func (l *Logger) Info(message string, args ...interface{}) {
-	l.log(message, args...)
+	l.logger.Info(message, args)
 }
 
 // Warn -.
 func (l *Logger) Warn(message string, args ...interface{}) {
-	l.log(message, args...)
+	l.logger.Warn(message, args)
 }
 
 // Error -.
 func (l *Logger) Error(message interface{}, args ...interface{}) {
-	if l.logger.GetLevel() == zerolog.DebugLevel {
-		l.Debug(message, args...)
-	}
-
-	l.msg("error", message, args...)
+	l.logger.Error(message, args)
 }
 
 // Fatal -.
-func (l *Logger) Fatal(message interface{}, args ...interface{}) {
-	l.msg("fatal", message, args...)
-
+func (l *Logger) Fatal(args ...interface{}) {
+	l.logger.Fatal(args)
 	os.Exit(1)
-}
-
-func (l *Logger) log(message string, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Info().Msg(message)
-	} else {
-		l.logger.Info().Msgf(message, args...)
-	}
-}
-
-func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
-	switch msg := message.(type) {
-	case error:
-		l.log(msg.Error(), args...)
-	case string:
-		l.log(msg, args...)
-	default:
-		l.log(fmt.Sprintf("%s message %v has unknown type %v", level, message, msg), args...)
-	}
 }

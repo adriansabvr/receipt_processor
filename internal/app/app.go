@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/adriansabvr/receipt_processor/config"
+	v1 "github.com/adriansabvr/receipt_processor/internal/controller/http/v1"
 	"github.com/adriansabvr/receipt_processor/pkg/httpserver"
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,7 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server
 	handler := gin.New()
+	v1.NewRouter(handler, l)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting interrupt signal
@@ -27,12 +29,12 @@ func Run(cfg *config.Config) {
 	case s := <-interrupt:
 		l.Info("app - Run - signal: " + s.String())
 	case err := <-httpServer.Notify():
-		l.Error(stacktrace.Propagate(err, "app - Run - httpServer.Notify"))
+		l.Error(stacktrace.Propagate(err, "failed to start http server"))
 	}
 
 	// Shutdown
 	err := httpServer.Shutdown()
 	if err != nil {
-		l.Error(stacktrace.Propagate(err, "app - Run - httpServer.Shutdown"))
+		l.Error(stacktrace.Propagate(err, "failed to shutdown http server"))
 	}
 }
