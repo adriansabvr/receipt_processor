@@ -1,4 +1,4 @@
-package usecase
+package receipt
 
 import (
 	"context"
@@ -11,24 +11,21 @@ import (
 
 // ReceiptUseCase -.
 type ReceiptUseCase struct {
-	repo ReceiptRepo
+	repo RepoContract
 }
 
 // New -.
-func New(r ReceiptRepo) *ReceiptUseCase {
+func New(r RepoContract) *ReceiptUseCase {
 	return &ReceiptUseCase{
 		repo: r,
 	}
 }
 
 // Process - inserts receipt to repo.
-func (uc *ReceiptUseCase) Process(ctx context.Context, receipt entity.Receipt) (uint64, error) {
-	receiptID, err := uc.repo.InsertReceipt(ctx, receipt)
-	if err != nil {
-		return 0, stacktrace.Propagate(err, "failed to insert receipt to repo")
-	}
+func (uc *ReceiptUseCase) Process(ctx context.Context, receipt entity.Receipt) uint64 {
+	receiptID := uc.repo.InsertReceipt(ctx, receipt)
 
-	return receiptID, nil
+	return receiptID
 }
 
 // GetPoints -.

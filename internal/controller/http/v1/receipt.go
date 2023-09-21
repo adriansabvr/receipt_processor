@@ -2,7 +2,7 @@ package v1
 
 import (
 	"github.com/adriansabvr/receipt_processor/internal/entity"
-	"github.com/adriansabvr/receipt_processor/internal/usecase"
+	"github.com/adriansabvr/receipt_processor/internal/usecase/receipt"
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/palantir/stacktrace"
@@ -13,11 +13,11 @@ import (
 )
 
 type receiptRoutes struct {
-	uc     usecase.Receipt
+	uc     receipt.UseCaseContract
 	logger logger.Interface
 }
 
-func newReceiptRoutes(handler *gin.RouterGroup, uc usecase.Receipt, logger logger.Interface) {
+func newReceiptRoutes(handler *gin.RouterGroup, uc receipt.UseCaseContract, logger logger.Interface) {
 	r := &receiptRoutes{uc, logger}
 
 	h := handler.Group("/receipts")
@@ -65,20 +65,23 @@ func (r *receiptRoutes) process(c *gin.Context) {
 		return
 	}
 
-	receipt := entity.Receipt{
+	items := make([]entity.Item, len(request.Items))
+	for i, item := range request.Items {
+		items[i] = entity.Item{
+			ShortDescription: item.ShortDescription,
+			Price:            item.Price,
+		}
+	}
+
+	receiptEnt := entity.Receipt{
 		Retailer:     request.Retailer,
 		PurchaseDate: purchaseDate,
 		PurchaseTime: purchaseTime,
 		Total:        request.Total,
-		Items:        request.Items,
+		Items:        items,
 	}
 
-	receiptID, err := r.uc.Process(c.Request.Context(), receipt)
-	if err != nil {
-		InternalServerError(c, r.logger, stacktrace.Propagate(err, "failed to process receipt"))
-
-		return
-	}
+	receiptID := r.uc.Process(c.Request.Context(), receiptEnt)
 
 	c.JSON(http.StatusOK, processResponse{ID: receiptID})
 }

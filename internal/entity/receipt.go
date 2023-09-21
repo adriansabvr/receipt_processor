@@ -12,8 +12,10 @@ type Receipt struct {
 	PurchaseDate time.Time       `json:"purchaseDate"`
 	PurchaseTime time.Time       `json:"purchaseTime"`
 	Total        decimal.Decimal `json:"total"`
-	Items        []struct {
-		ShortDescription string          `json:"shortDescription"`
-		Price            decimal.Decimal `json:"price"`
-	} `json:"items"`
+	Items        []Item          `json:"items"`
+}
+
+type Item struct {
+	ShortDescription string          `json:"shortDescription"`
+	Price            decimal.Decimal `json:"price"`
 }

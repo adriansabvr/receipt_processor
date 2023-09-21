@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"github.com/adriansabvr/receipt_processor/internal/usecase"
-	"github.com/adriansabvr/receipt_processor/internal/usecase/repo"
+	"github.com/adriansabvr/receipt_processor/internal/usecase/receipt"
+	"github.com/adriansabvr/receipt_processor/internal/usecase/receipt/repo"
 	"github.com/adriansabvr/receipt_processor/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +15,8 @@ func NewRouter(handler *gin.Engine, l logger.Interface) {
 	// Routers
 	h := handler.Group("/v1")
 
-	// Receipt
+	// ReceiptService
 	receiptRepo := repo.New()
-	receiptUseCase := usecase.New(receiptRepo)
+	receiptUseCase := receipt.New(receiptRepo)
 	newReceiptRoutes(h, receiptUseCase, l)
 }

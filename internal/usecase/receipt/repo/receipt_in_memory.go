@@ -21,11 +21,11 @@ func New() *ReceiptRepo {
 var id uint64 = 0
 
 // InsertReceipt -.
-func (r *ReceiptRepo) InsertReceipt(_ context.Context, receipt entity.Receipt) (uint64, error) {
+func (r *ReceiptRepo) InsertReceipt(_ context.Context, receipt entity.Receipt) uint64 {
 	id++
 	r.mp[id] = receipt
 
-	return id, nil
+	return id
 }
 
 // GetReceipt -.
