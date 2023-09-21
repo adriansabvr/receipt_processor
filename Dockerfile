@@ -17,4 +17,5 @@ FROM scratch
 COPY --from=builder /app/config /config
 COPY --from=builder /bin/app /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+EXPOSE 8080
 CMD ["/app"]
